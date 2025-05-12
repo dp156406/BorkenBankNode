@@ -34,6 +34,31 @@ db.serialize(() => {
             console.error('Fehler beim Erstellen der Tabelle:', err.message);
         } else {
             console.log('Tabelle "kunden" bereit.');
+            // Beispielkunde einfügen, falls nicht vorhanden
+            db.get(
+                `SELECT * FROM kunden WHERE benutzername = ?`,
+                ['pk'],
+                (err, row) => {
+                    if (err) {
+                        console.error('Fehler beim Prüfen des Beispielkunden:', err.message);
+                    } else if (!row) {
+                        db.run(
+                            `INSERT INTO kunden (nachname, vorname, benutzername, kennwort, istEingeloggt)
+                             VALUES (?, ?, ?, ?, ?)`,
+                            ['Kiff', 'Pit', 'pk', '123', false],
+                            (err) => {
+                                if (err) {
+                                    console.error('Fehler beim Einfügen des Beispielkunden:', err.message);
+                                } else {
+                                    console.log('Beispielkunde wurde angelegt.');
+                                }
+                            }
+                        );
+                    } else {
+                        console.log('Beispielkunde existiert bereits.');
+                    }
+                }
+            );
         }
     });
 });
