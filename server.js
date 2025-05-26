@@ -271,6 +271,30 @@ app.post('/login', (req, res) => {
     }
 });
 
+
+// die Datenbank wird abgefragt, ob es einen Kunden mit dem angegebenen Benutzernamen gibt
+app.post('/checkBenutzername', (req, res) => {
+    let benutzername = req.body.Benutzername;
+    db.get('SELECT * FROM kunden WHERE benutzername = ?', [benutzername], (err, row) => {
+        if (err) {
+            console.error('Fehler beim Abfragen des Benutzernamens:', err.message);
+            res.status(500).send('Interner Serverfehler');
+        } else if (row) {
+            res.json({ exists: true });
+        } else {
+            res.json({ exists: false });
+        }
+    });
+});
+console.log("checkBenutzername wurde aufgerufen");
+// Registrierung eines neuen Kunden
+//err ist kein string sondern objekt
+
+
+//Fylls der kunde nicht gefunden wurde, dann wird die funktion bereits weiter oben mit einem return verlassen
+
+
+
 // Server starten
 app.listen(PORT, HOST, () => {
     console.log(`Running on http://${HOST}:${PORT}`);
